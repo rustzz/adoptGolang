@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// postImage : отправка изображения на сервер
 func postImage(url string, img io.Reader) (server int, photo, hash string, err error) {
 	type UploadResponse struct {
 		Server int    `json:"server"`
@@ -54,6 +55,12 @@ func postImage(url string, img io.Reader) (server int, photo, hash string, err e
 	return
 }
 
+/*
+uploadImage : совмещающая функция по загрузке изображения
+	- получает сервер
+	- загружает
+	- сохраняет
+ */
 func (sender *Sender) uploadImage(peerID int, imageReader *bytes.Reader) (resp api.PhotosSaveMessagesPhotoResponse, err error) {
 	server, photo, hash, err := func () (server int, photo, hash string, err error) {
 		parameters := params.NewPhotosGetMessagesUploadServerBuilder()

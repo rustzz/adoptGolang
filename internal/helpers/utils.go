@@ -15,11 +15,18 @@ func GetTexts(message string, countTexts int) (out []string) {
 	splitedMessage := strings.Split(message, "\n")
 	var _tmp string
 
-	fromIndex := 0
-	if matched, _ := regexp.Match(`^\[\s+\d+|@\s+\]$`, []byte(strings.Split(message, " ")[0])); matched {
+	fromIndex := 0	/*
+					от какого индекса получать текста команды
+					ниже: если имеется префикс к боту в виде [club123456|name],
+					то отдавать от первого индекса, где находится имя команды
+					*/
+	_tmp = strings.ToLower(strings.Split(message, " ")[0])
+	matched, _ := regexp.Match(`^\[\w+\d+\|.*\w+\].*$`, []byte(_tmp))
+	if matched || IsBotNamePrefix(message) {
 		fromIndex = 1
 	}
 
+	_tmp = ""
 	for index, word := range strings.Split(splitedMessage[0], " ") {
 		if index > fromIndex {
 			_tmp += fmt.Sprintf("%s ", word)
@@ -35,6 +42,12 @@ func GetTexts(message string, countTexts int) (out []string) {
 	return
 }
 
+/*
+GetImages : Собирает все изображения из сообщения
+			- 1: в сообщении
+			- 2: в пересланном сообщении (по первому индексу; не со всех пересланных)
+			- 3: в отвеченном сообщении
+*/
 func GetImages(message object.MessagesMessage, countImages int) (srcImageReaders []*bytes.Reader, err error) {
 	// in message
 	if err = ImageExist(message.Attachments); err == nil {
@@ -52,7 +65,8 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageReaders
 	if err = FwdMessageExist(message); err == nil {
 		if err = ImageExist(message.FwdMessages[0].Attachments); err == nil {
 			for _, attachment := range message.FwdMessages[0].Attachments {
-				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1
+				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1	/* Индекс последней ссылки
+																		   (с макс. разрешением) */
 				srcImageReader, err := demotivator.LoadSrcImageFromURL(
 					attachment.Photo.Sizes[lenOfAvailablePhotos].URL,
 				)
@@ -78,22 +92,31 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageReaders
 		} else { return nil, err }
 	}
 
-	// заглушка
+	// заглушка | необходимо для избежания ошибки с nil-pointer
 	_tmp := image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: image.Point{X: 100, Y: 100}})
 	imageBytes := &bytes.Buffer{}
 	png.Encode(imageBytes, _tmp)
 	srcImageReader := bytes.NewReader(imageBytes.Bytes())
-	if len(srcImageReaders) != countImages {
-		for i := len(srcImageReaders); i < countImages; i++ {
-			srcImageReaders = append(srcImageReaders, srcImageReader)
-		}
+	for i := len(srcImageReaders); i < countImages; i++ {
+		srcImageReaders = append(srcImageReaders, srcImageReader)
+		if i > countImages { return }	/*
+								 закончить, если при сборе изображений
+								 выше их количество было больше запрошенного
+								 */
 	}
 	return
 }
 
+/*
+GetCommand : Отдает имя команды в зависимости как вызывался бот
+			[club123456|name], -  с запятой для моб. клиента
+								  без запятой для веб клиента
+ */
 func GetCommand(message string) string {
-	if matched, _ := regexp.Match(`^\[\s+\d+|@\s+\]$`, []byte(strings.Split(message, " ")[0])); matched {
-		return strings.Split(message, " ")[1]
+	_tmp := strings.Split(message, " ")[0]
+	matched, _ := regexp.Match(`^\[\w+\d+\|.*\w+\].*$`, []byte(strings.ToLower(_tmp)))
+	if matched || IsBotNamePrefix(message) {
+		return strings.ToLower(strings.Split(message, " ")[1])
 	}
-	return strings.Split(message, " ")[0]
+	return strings.ToLower(strings.Split(message, " ")[0])
 }

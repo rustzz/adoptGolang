@@ -1,14 +1,15 @@
 package handler
 
 import (
-	"github.com/SevereCloud/vksdk/v2/events"
 	"adoptGolang/internal/helpers"
+	"github.com/SevereCloud/vksdk/v2/events"
 	"github.com/rustzz/blocks"
 	"github.com/rustzz/demotivator"
 	"image"
 	"log"
 )
 
+// HandleDem : Демотиватор
 func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 	dem := &demotivator.Demotivator{}
 	srcImageReaders, err := helpers.GetImages(obj.Message, 1)
@@ -40,6 +41,7 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 	return
 }
 
+// HandleTBD : ...
 func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 	tbd := blocks.New()
 	srcImageReaders, err := helpers.GetImages(obj.Message, 2)
@@ -74,5 +76,11 @@ func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 		log.Println("[ERROR]: ", err)
 		return
 	}
+	return
+}
+
+// HandleLiquidRescale : функция кас
+func (handler *Handler) HandleLiquidRescale(obj *events.MessageNewObject) {
+	handler.Sender.Send(obj.Message.PeerID, "Модуль не готов")
 	return
 }

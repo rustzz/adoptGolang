@@ -1,20 +1,24 @@
 package main
 
 import (
+	"adoptGolang/internal/handler"
+	"adoptGolang/internal/sender"
 	"context"
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/events"
 	"github.com/SevereCloud/vksdk/v2/longpoll-bot"
-	"adoptGolang/internal/handler"
-	"adoptGolang/internal/sender"
 	"log"
 	"os"
+	"runtime"
 )
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	token := os.Getenv("VK_GROUP_TOKEN")
 	client := api.NewVK(token)
 
+	// настройка лонгполла для бота
 	group, err := client.GroupsGetByID(nil)
 	if err != nil {
 		log.Fatal("[FATAL]: ", err)
