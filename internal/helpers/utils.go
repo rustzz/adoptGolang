@@ -32,7 +32,7 @@ func GetTexts(message string, countTexts int) (out []string) {
 			_tmp += fmt.Sprintf("%s ", word)
 		}
 	}
-	out = append(out, _tmp)
+	out = append(out, _tmp[0:len(_tmp)-1])
 	for _, elem := range splitedMessage[1:] {
 		out = append(out, elem)
 	}
@@ -52,7 +52,10 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageReaders
 	// in message
 	if err = ImageExist(message.Attachments); err == nil {
 		for _, attachment := range message.Attachments {
-			lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1
+			lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1 /*
+																	Индекс последней ссылки
+																	(с макс. разрешением)
+																	 */
 			srcImageReader, err := demotivator.LoadSrcImageFromURL(
 				attachment.Photo.Sizes[lenOfAvailablePhotos].URL,
 			)
@@ -65,8 +68,7 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageReaders
 	if err = FwdMessageExist(message); err == nil {
 		if err = ImageExist(message.FwdMessages[0].Attachments); err == nil {
 			for _, attachment := range message.FwdMessages[0].Attachments {
-				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1	/* Индекс последней ссылки
-																		   (с макс. разрешением) */
+				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1
 				srcImageReader, err := demotivator.LoadSrcImageFromURL(
 					attachment.Photo.Sizes[lenOfAvailablePhotos].URL,
 				)
@@ -116,6 +118,7 @@ func GetCommand(message string) string {
 	_tmp := strings.Split(message, " ")[0]
 	matched, _ := regexp.Match(`^\[\w+\d+\|.*\w+\].*$`, []byte(strings.ToLower(_tmp)))
 	if matched || IsBotNamePrefix(message) {
+		if len(strings.Split(message, " ")) < 2 { return "" }
 		return strings.ToLower(strings.Split(message, " ")[1])
 	}
 	return strings.ToLower(strings.Split(message, " ")[0])

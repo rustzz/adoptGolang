@@ -13,10 +13,10 @@ github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 h1:zYyBkD/k9seD2A7fsi6
 github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646/go.mod h1:jpp1/29i3P1S/RLdc7JQKbRpFeM1dOBd8T9ki5s+AY8=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/rustzz/blocks v0.0.0-20210221180452-bcee3a0bc520 h1:1sOaawQ5w446pAKBg7utdySWSCRCRqoXhP6Nc4Kr+/Y=
-github.com/rustzz/blocks v0.0.0-20210221180452-bcee3a0bc520/go.mod h1:WKybAg3rUNqvQo4DWP9CiaGZsy7MS9PrOouwwxpllEM=
-github.com/rustzz/demotivator v0.0.0-20210221180247-a66422faea19 h1:Al3jw5AxwiRXIQMlOkCL811dIRynhz5oRST7/7s6a18=
-github.com/rustzz/demotivator v0.0.0-20210221180247-a66422faea19/go.mod h1:SlcKo6ooYzBbdgsMiWLvn6RN8dskE2ie4k9cz3abEgM=
+github.com/rustzz/blocks v0.0.0-20210222144202-d1599d6e38ea h1:sOAduxNYWf1a8vBAY7EToy4LpZMSMJgV7vCzreIn4WI=
+github.com/rustzz/blocks v0.0.0-20210222144202-d1599d6e38ea/go.mod h1:WKybAg3rUNqvQo4DWP9CiaGZsy7MS9PrOouwwxpllEM=
+github.com/rustzz/demotivator v0.0.0-20210222153849-d1430558dbd2 h1:ddVsuefB40clCet15hYvwNLGU7GLfxumpKfFgljDCyE=
+github.com/rustzz/demotivator v0.0.0-20210222153849-d1430558dbd2/go.mod h1:8/lrCHUVWfcNFXjSy4RjKKS4LmIhZEMCrP2WkZVaK0k=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
