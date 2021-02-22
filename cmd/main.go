@@ -5,8 +5,8 @@ import (
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/events"
 	"github.com/SevereCloud/vksdk/v2/longpoll-bot"
-	"github.com/rustzz/adopt/internal/handler"
-	"github.com/rustzz/adopt/internal/sender"
+	"adoptGolang/internal/handler"
+	"adoptGolang/internal/sender"
 	"log"
 	"os"
 )

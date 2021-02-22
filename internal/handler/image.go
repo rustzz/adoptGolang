@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/SevereCloud/vksdk/v2/events"
-	"github.com/rustzz/adopt/internal/helpers"
+	"adoptGolang/internal/helpers"
 	"github.com/rustzz/blocks"
 	"github.com/rustzz/demotivator"
 	"image"

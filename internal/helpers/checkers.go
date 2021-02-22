@@ -2,7 +2,7 @@ package helpers
 
 import (
 	"github.com/SevereCloud/vksdk/v2/object"
-	"github.com/rustzz/adopt/internal/errors"
+	"adoptGolang/internal/errors"
 )
 
 func ImageExist(attachments []object.MessagesMessageAttachment) error {

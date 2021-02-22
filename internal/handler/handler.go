@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/events"
-	"github.com/rustzz/adopt/internal/helpers"
-	"github.com/rustzz/adopt/internal/sender"
+	"adoptGolang/internal/helpers"
+	"adoptGolang/internal/sender"
 	"log"
 )
 
