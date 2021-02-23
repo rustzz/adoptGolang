@@ -36,7 +36,7 @@ func GetTexts(message string, countTexts int) (out []string) {
 			_tmp += fmt.Sprintf("%s ", word)
 		}
 	}
-	out = append(out, _tmp[0:len(_tmp)-1])
+	if len(_tmp) > 0 { out = append(out, _tmp[0:len(_tmp)-1]) }
 	for _, elem := range splitedMessage[1:] {
 		out = append(out, elem)
 	}

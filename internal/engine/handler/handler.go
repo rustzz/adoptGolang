@@ -20,19 +20,39 @@ type Handler struct {
 }
 
 func (handler *Handler) Handle(obj *events.MessageNewObject) {
-	log.Println("[INFO]: ", fmt.Sprintf("%d: %s", obj.Message.PeerID, obj.Message.Text))
+	log.Println(fmt.Sprintf(
+			"[INFO][OUT][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 
 	command := engine.GetCommand(obj.Message.Text)
 	if messageHandler.IsDem(command) {
+		log.Println(fmt.Sprintf(
+			"[INFO][Начало][Демотиватор][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		handler.HandleDem(obj)
+		log.Println(fmt.Sprintf(
+			"[INFO][Конец][Демотиватор][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		return // решил добавить, воизбежание double-message
 	}
 	if messageHandler.IsTBD(command) {
+		log.Println(fmt.Sprintf(
+			"[INFO][Начало][TBD][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		handler.HandleTBD(obj)
+		log.Println(fmt.Sprintf(
+			"[INFO][Начало][TBD][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		return
 	}
 	if messageHandler.IsLiquidRescale(command) {
+		log.Println(fmt.Sprintf(
+			"[INFO][Начало][LiquidRescale][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		handler.HandleLiquidRescale(obj)
+		log.Println(fmt.Sprintf(
+			"[INFO][Начало][LiquidRescale][CHAT: %d][USER: %d]: %s",
+			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		return
 	}
 	return
