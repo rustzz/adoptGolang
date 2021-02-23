@@ -10,16 +10,20 @@ import (
 	"net/http"
 )
 
-// postImage : отправка изображения на сервер
-func postImage(url string, img io.Reader) (server int, photo, hash string, err error) {
-	type UploadResponse struct {
-		Server int    `json:"server"`
-		Photo  string `json:"photo"`
-		Hash   string `json:"hash"`
-	}
+type UploadResponse struct {
+	Server int    `json:"server"`
+	Photo  string `json:"photo"`
+	Hash   string `json:"hash"`
+}
 
-	var multipartBuffer bytes.Buffer
-	multipartWriter := multipart.NewWriter(&multipartBuffer)
+type Uploader struct {
+	UploadResponse	*UploadResponse
+}
+
+// sendImage : отправка изображения на сервер
+func (sender *Sender) sendImage(url string, img io.Reader) (server int, photo, hash string, err error) {
+	multipartBuffer := new(bytes.Buffer)
+	multipartWriter := multipart.NewWriter(multipartBuffer)
 	fileWriter, err := multipartWriter.CreateFormFile("photo", "photo.jpg")
 	if err != nil {
 		return
@@ -27,31 +31,31 @@ func postImage(url string, img io.Reader) (server int, photo, hash string, err e
 	if _, err = io.Copy(fileWriter, img); err != nil {
 		return
 	}
-	multipartWriter.Close()
+	if err = multipartWriter.Close(); err != nil {
+		return
+	}
 
-	req, err := http.NewRequest("POST", url, &multipartBuffer)
+	req, err := http.NewRequest("POST", url, multipartBuffer)
 	if err != nil {
 		return
 	}
 	req.Header.Set("Content-Type", multipartWriter.FormDataContentType())
 
-	client := &http.Client{}
+	client := new(http.Client)
 	resp, err := client.Do(req)
 	if err != nil {
 		return
 	}
 
-	uploadResp := UploadResponse{}
 	decodedData := json.NewDecoder(resp.Body)
-	err = decodedData.Decode(&uploadResp)
-	if err != nil {
+	if err = decodedData.Decode(sender.Uploader.UploadResponse); err != nil {
 		return
 	}
 	defer resp.Body.Close()
 
-	server = uploadResp.Server
-	photo = uploadResp.Photo
-	hash = uploadResp.Hash
+	server = sender.Uploader.UploadResponse.Server
+	photo = sender.Uploader.UploadResponse.Photo
+	hash = sender.Uploader.UploadResponse.Hash
 	return
 }
 
@@ -69,7 +73,7 @@ func (sender *Sender) uploadImage(peerID int, imageReader *bytes.Reader) (resp a
 		if err != nil {
 			return
 		}
-		server, photo, hash, err = postImage(resp.UploadURL, imageReader)
+		server, photo, hash, err = sender.sendImage(resp.UploadURL, imageReader)
 		if err != nil {
 			return
 		}

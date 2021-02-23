@@ -1,8 +1,8 @@
 package main
 
 import (
-	"adoptGolang/internal/handler"
-	"adoptGolang/internal/sender"
+	"adoptGolang/internal/engine/handler"
+	"adoptGolang/internal/engine/sender"
 	"context"
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/events"

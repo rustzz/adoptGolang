@@ -1,8 +1,8 @@
-package helpers
+package message
 
 import (
 	"adoptGolang"
-	"adoptGolang/internal/errors"
+	"adoptGolang/internal/engine/errors"
 	"github.com/SevereCloud/vksdk/v2/object"
 	"regexp"
 	"strings"

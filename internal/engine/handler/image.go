@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"adoptGolang/internal/helpers"
+	"adoptGolang/internal/engine"
+	"adoptGolang/internal/engine/errors"
 	"github.com/SevereCloud/vksdk/v2/events"
 	"github.com/rustzz/blocks"
 	"github.com/rustzz/demotivator"
@@ -11,8 +12,8 @@ import (
 
 // HandleDem : Демотиватор
 func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
-	dem := &demotivator.Demotivator{}
-	srcImageReaders, err := helpers.GetImages(obj.Message, 1)
+	dem := demotivator.New()
+	srcImageReaders, err := engine.GetImages(obj.Message, 1)
 	if err != nil {
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
@@ -24,10 +25,8 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	texts := helpers.GetTexts(obj.Message.Text, 2)
-	outImageReader, err := dem.Make(
-		srcImage, texts, "",
-	)
+	texts := engine.GetTexts(obj.Message.Text, 2)
+	outImageReader, err := dem.Make(&srcImage, texts, "")
 	if err != nil {
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
@@ -44,28 +43,26 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 // HandleTBD : ...
 func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 	tbd := blocks.New()
-	srcImageReaders, err := helpers.GetImages(obj.Message, 2)
+	srcImageReaders, err := engine.GetImages(obj.Message, 2)
 	if err != nil {
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	images := func () (out []image.Image) {
+	images, _ := func () (out []*image.Image, err error) {
 		for _, srcImageReader := range srcImageReaders {
 			srcImage, _, err := image.Decode(srcImageReader)
 			if err != nil {
 				handler.Sender.Send(obj.Message.PeerID, err.Error())
 				log.Println("[ERROR]: ", err)
-				return
+				return out, err
 			}
-			out = append(out, srcImage)
+			out = append(out, &srcImage)
 		}
 		return
 	}()
-	texts := helpers.GetTexts(obj.Message.Text, 3)
-	outImageReader, err := tbd.Make(
-		images, texts, "",
-	)
+	texts := engine.GetTexts(obj.Message.Text, 3)
+	outImageReader, err := tbd.Make(&images, texts, "")
 	if err != nil {
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
@@ -81,6 +78,6 @@ func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 
 // HandleLiquidRescale : функция кас
 func (handler *Handler) HandleLiquidRescale(obj *events.MessageNewObject) {
-	handler.Sender.Send(obj.Message.PeerID, "Модуль не готов")
+	handler.Sender.Send(obj.Message.PeerID, new(errors.ModuleNotImplemented).Error())
 	return
 }

@@ -1,4 +1,4 @@
-package helpers
+package message
 
 func IsDem(command string) bool {
 	return command == "dem" || command == "дем"

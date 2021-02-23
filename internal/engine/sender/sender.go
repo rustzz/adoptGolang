@@ -8,7 +8,8 @@ import (
 )
 
 type Sender struct {
-	Client	*api.VK
+	Client		*api.VK
+	Uploader	*Uploader
 }
 
 func (sender *Sender) SendWithImage(peerID int, message string, imageReader *bytes.Reader) (err error) {
