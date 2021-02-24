@@ -11,6 +11,9 @@ import (
 
 // Todo : Перенести в внешний модуль (репозиторий)
 func DoRescale(handler *Handler, obj *events.MessageNewObject) {
+	imagick.Initialize()
+	defer imagick.Terminate()
+
 	texts := utils.GetTexts(obj.Message.Text, 1)
 	countOfRescales, err := strconv.Atoi(texts[0])
 	if err != nil {
@@ -24,20 +27,18 @@ func DoRescale(handler *Handler, obj *events.MessageNewObject) {
 		log.Println("[ERROR]: ", err)
 		return
 	}
-
+	// image.Decode(...) съедает байты с буффера
+	srcImageBytes := srcImageBuffers[0].Bytes()
 	srcImage, _, err := image.Decode(srcImageBuffers[0])
 	if err != nil {
 		// Todo : ошибка unknown
-		handler.Sender.Send(obj.Message.PeerID, err.Error())
+		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
 
-	imagick.Initialize()
-	defer imagick.Terminate()
 	mw := imagick.NewMagickWand()
-
-	if err = mw.ReadImageBlob(srcImageBuffers[0].Bytes()); err != nil {
+	if err = mw.ReadImageBlob(srcImageBytes); err != nil {
 		// Todo : ошибка unknown
 		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)

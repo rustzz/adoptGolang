@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"adoptGolang/internal/engine/errors"
 	messageHandler "adoptGolang/internal/engine/handler/message"
 	"bytes"
 	"fmt"
@@ -59,9 +60,9 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageBuffers
 	if err = messageHandler.ImageExist(message.Attachments); err == nil {
 		for _, attachment := range message.Attachments {
 			lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1 /*
-				Индекс последней ссылки
-				(с макс. разрешением)
-			*/
+																	Индекс последней ссылки
+																	(с макс. разрешением)
+																	 */
 			srcImageBuffer, err := LoadSrcImageBufferFromURL(attachment.Photo.Sizes[lenOfAvailablePhotos].URL)
 			if err != nil { return nil, err }
 			srcImageBuffers = append(srcImageBuffers, srcImageBuffer)
@@ -73,9 +74,9 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageBuffers
 		if err = messageHandler.ImageExist(message.FwdMessages[0].Attachments); err == nil {
 			for _, attachment := range message.FwdMessages[0].Attachments {
 				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1
-				srcImageReader, err := LoadSrcImageBufferFromURL(attachment.Photo.Sizes[lenOfAvailablePhotos].URL)
+				srcImageBuffer, err := LoadSrcImageBufferFromURL(attachment.Photo.Sizes[lenOfAvailablePhotos].URL)
 				if err != nil { return nil, err }
-				srcImageBuffers = append(srcImageBuffers, srcImageReader)
+				srcImageBuffers = append(srcImageBuffers, srcImageBuffer)
 			}
 			return srcImageBuffers, nil
 		} else { return nil, err }
@@ -94,6 +95,8 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageBuffers
 		} else { return nil, err }
 	}
 
+	// вообще нет изображений от пользователя
+	if len(srcImageBuffers) == 0 { return nil, &errors.ImageNotFound{}}
 	// заглушка | необходимо для избежания ошибки с nil-pointer
 	_tmp := image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: image.Point{X: 500, Y: 500}})
 	imageBuffer := new(bytes.Buffer)

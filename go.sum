@@ -17,6 +17,10 @@ github.com/rustzz/blocks v0.0.0-20210223121020-ede4ca3e0b6a h1:ZfMrsyYrvWzQSLz1z
 github.com/rustzz/blocks v0.0.0-20210223121020-ede4ca3e0b6a/go.mod h1:WKybAg3rUNqvQo4DWP9CiaGZsy7MS9PrOouwwxpllEM=
 github.com/rustzz/demotivator v0.0.0-20210224074232-04aa3e9df5e3 h1:lLe6vLFt0rM1ACrquun/OsQ0pdmFSjqdRtujQBhLi8A=
 github.com/rustzz/demotivator v0.0.0-20210224074232-04aa3e9df5e3/go.mod h1:pjfliuLiT88LQZRerr1eUij6y1irGo30nRvY+g8ZTYI=
+github.com/rustzz/demotivator v0.0.0-20210224160804-034bb01cbe55 h1:y2ktmvuBRzscRC22ctDyDsMLOhTkwl0oGpeTEPvscJM=
+github.com/rustzz/demotivator v0.0.0-20210224160804-034bb01cbe55/go.mod h1:pjfliuLiT88LQZRerr1eUij6y1irGo30nRvY+g8ZTYI=
+github.com/rustzz/demotivator v0.0.0-20210224162431-b7ab40a17929 h1:JScx0NeV170LNhw9La1Sa8Zn2OFB6InbEhZF5Pi2jQo=
+github.com/rustzz/demotivator v0.0.0-20210224162431-b7ab40a17929/go.mod h1:pjfliuLiT88LQZRerr1eUij6y1irGo30nRvY+g8ZTYI=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

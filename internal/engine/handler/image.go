@@ -15,7 +15,7 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 
 	srcImageBuffers, err := utils.GetImages(obj.Message, 1)
 	if err != nil {
-		// Todo : Создать кастомную ошибку получения изображения
+		// Todo : Создать кастомную ошибку получения изображений
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return

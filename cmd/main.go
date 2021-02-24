@@ -34,9 +34,7 @@ func main() {
 		Client: client,
 		Sender: &sender.Sender{Client: client},
 	}
-	lp.MessageNew(func(_ context.Context, obj events.MessageNewObject) {
-		go Handler.Handle(&obj)
-	})
+	lp.MessageNew(func(_ context.Context, obj events.MessageNewObject) { go Handler.Handle(&obj) })
 
 	log.Println("Starting...")
 	if err = lp.Run(); err != nil {
