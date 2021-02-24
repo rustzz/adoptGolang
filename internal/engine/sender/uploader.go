@@ -20,6 +20,7 @@ type UploadResponse struct {
 func (sender *Sender) sendImage(url string, img io.Reader) (server int, photo, hash string, err error) {
 	multipartBuffer := new(bytes.Buffer)
 	multipartWriter := multipart.NewWriter(multipartBuffer)
+
 	fileWriter, err := multipartWriter.CreateFormFile("photo", "photo.jpg")
 	if err != nil { return }
 	if _, err = io.Copy(fileWriter, img); err != nil { return }
@@ -50,7 +51,9 @@ uploadImage : совмещающая функция по загрузке изо
 	- загружает
 	- сохраняет
  */
-func (sender *Sender) uploadImage(peerID int, imageReader *bytes.Reader) (resp api.PhotosSaveMessagesPhotoResponse, err error) {
+func (sender *Sender) uploadImage(
+	peerID int, imageReader *bytes.Reader,
+) (resp api.PhotosSaveMessagesPhotoResponse, err error) {
 	server, photo, hash, err := func () (server int, photo, hash string, err error) {
 		parameters := params.NewPhotosGetMessagesUploadServerBuilder()
 		parameters.PeerID(peerID)

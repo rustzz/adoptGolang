@@ -1,38 +1,43 @@
 package handler
 
 import (
-	"adoptGolang/internal/engine"
-	"adoptGolang/internal/engine/errors"
+	"adoptGolang/internal/engine/utils"
 	"github.com/SevereCloud/vksdk/v2/events"
-	"github.com/rustzz/blocks"
-	"github.com/rustzz/demotivator"
+	mBlocks "github.com/rustzz/blocks"
+	mDemotivator "github.com/rustzz/demotivator"
 	"image"
 	"log"
 )
 
 // HandleDem : Демотиватор
 func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
-	dem := demotivator.New()
-	srcImageReaders, err := engine.GetImages(obj.Message, 1)
+	texts := utils.GetTexts(obj.Message.Text, 2)
+
+	srcImageBuffers, err := utils.GetImages(obj.Message, 1)
 	if err != nil {
+		// Todo : Создать кастомную ошибку получения изображения
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	srcImage, _, err := image.Decode(srcImageReaders[0])
+	srcImage, _, err := image.Decode(srcImageBuffers[0])
 	if err != nil {
-		handler.Sender.Send(obj.Message.PeerID, err.Error())
+		// Todo : Создать кастомную unknown ошибку, т.к. это нельзя показывать пользователю
+		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	texts := engine.GetTexts(obj.Message.Text, 2)
-	outImageReader, err := dem.Make(&srcImage, texts, "")
+
+	demotivator := mDemotivator.New()
+	outImageReader, err := demotivator.Make(&srcImage, texts, "")
 	if err != nil {
-		handler.Sender.Send(obj.Message.PeerID, err.Error())
+		// Todo : ошибка unknown
+		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
 	if err = handler.Sender.SendWithImage(obj.Message.PeerID, "Держи", outImageReader); err != nil {
+		// Todo : Создать кастомную ошибку отправки сообщения с изображением
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
@@ -42,18 +47,21 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 
 // HandleTBD : ...
 func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
-	tbd := blocks.New()
-	srcImageReaders, err := engine.GetImages(obj.Message, 2)
+	texts := utils.GetTexts(obj.Message.Text, 3)
+
+	srcImageBuffers, err := utils.GetImages(obj.Message, 2)
 	if err != nil {
+		// Todo : ошибка получения изображения
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
 	images, _ := func () (out []*image.Image, err error) {
-		for _, srcImageReader := range srcImageReaders {
-			srcImage, _, err := image.Decode(srcImageReader)
+		for _, srcImageBuffer := range srcImageBuffers {
+			srcImage, _, err := image.Decode(srcImageBuffer)
 			if err != nil {
-				handler.Sender.Send(obj.Message.PeerID, err.Error())
+				// Todo : ошибка unknown
+				//handler.Sender.Send(obj.Message.PeerID, err.Error())
 				log.Println("[ERROR]: ", err)
 				return out, err
 			}
@@ -61,14 +69,17 @@ func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 		}
 		return
 	}()
-	texts := engine.GetTexts(obj.Message.Text, 3)
-	outImageReader, err := tbd.Make(&images, texts, "")
+
+	blocks := mBlocks.New()
+	outImageReader, err := blocks.Make(&images, texts, "")
 	if err != nil {
-		handler.Sender.Send(obj.Message.PeerID, err.Error())
+		// Todo : ошибка unknown
+		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
 	if err = handler.Sender.SendWithImage(obj.Message.PeerID, "Держи", outImageReader); err != nil {
+		// Todo : ошибка отправки сообщения с изображением
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
@@ -78,6 +89,7 @@ func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 
 // HandleLiquidRescale : функция кас
 func (handler *Handler) HandleLiquidRescale(obj *events.MessageNewObject) {
-	handler.Sender.Send(obj.Message.PeerID, new(errors.ModuleNotImplemented).Error())
+	// Todo : Смотреть внутрь функции
+	DoRescale(handler, obj)
 	return
 }

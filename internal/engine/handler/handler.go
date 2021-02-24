@@ -2,9 +2,9 @@ package handler
 
 import "C"
 import (
-	"adoptGolang/internal/engine"
 	messageHandler "adoptGolang/internal/engine/handler/message"
 	"adoptGolang/internal/engine/sender"
+	"adoptGolang/internal/engine/utils"
 	"fmt"
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/events"
@@ -24,7 +24,7 @@ func (handler *Handler) Handle(obj *events.MessageNewObject) {
 			"[INFO][OUT][CHAT: %d][USER: %d]: %s",
 			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 
-	command := engine.GetCommand(obj.Message.Text)
+	command := utils.GetCommand(obj.Message.Text)
 	if messageHandler.IsDem(command) {
 		log.Println(fmt.Sprintf(
 			"[INFO][Начало][Демотиватор][CHAT: %d][USER: %d]: %s",
