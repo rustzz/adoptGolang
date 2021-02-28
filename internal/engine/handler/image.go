@@ -2,6 +2,7 @@ package handler
 
 import (
 	"adoptGolang/internal/engine/utils"
+	"adoptGolang/pkg/rescale"
 	"github.com/SevereCloud/vksdk/v2/events"
 	mBlocks "github.com/rustzz/blocks"
 	mDemotivator "github.com/rustzz/demotivator"
@@ -10,7 +11,7 @@ import (
 )
 
 // HandleDem : Демотиватор
-func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
+func (handler *Handler) HandleDem(obj events.MessageNewObject) {
 	texts := utils.GetTexts(obj.Message.Text, 2)
 
 	srcImageBuffers, err := utils.GetImages(obj.Message, 1)
@@ -28,15 +29,17 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 		return
 	}
 
-	demotivator := mDemotivator.New()
-	outImageReader, err := demotivator.Make(&srcImage, texts, "")
+	demotivator := mDemotivator.New(srcImage, [2]string{texts[0], texts[1]})
+	outImageReader, err := demotivator.Make(nil, [2]string{})
 	if err != nil {
 		// Todo : ошибка unknown
 		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	if err = handler.Sender.SendWithImage(obj.Message.PeerID, "Держи", outImageReader); err != nil {
+	if err = handler.Sender.SendWithImage(
+		obj.Message.PeerID, "Держи", utils.BufferToReader(outImageReader),
+	); err != nil {
 		// Todo : Создать кастомную ошибку отправки сообщения с изображением
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
@@ -46,7 +49,7 @@ func (handler *Handler) HandleDem(obj *events.MessageNewObject) {
 }
 
 // HandleTBD : ...
-func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
+func (handler *Handler) HandleTBD(obj events.MessageNewObject) {
 	texts := utils.GetTexts(obj.Message.Text, 3)
 
 	srcImageBuffers, err := utils.GetImages(obj.Message, 2)
@@ -56,29 +59,34 @@ func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	images, _ := func () (out []*image.Image, err error) {
+	images, _ := func () (out []image.Image, err error) {
 		for _, srcImageBuffer := range srcImageBuffers {
 			srcImage, _, err := image.Decode(srcImageBuffer)
 			if err != nil {
 				// Todo : ошибка unknown
 				//handler.Sender.Send(obj.Message.PeerID, err.Error())
 				log.Println("[ERROR]: ", err)
-				return out, err
+				return nil, err
 			}
-			out = append(out, &srcImage)
+			out = append(out, srcImage)
 		}
 		return
 	}()
 
-	blocks := mBlocks.New()
-	outImageReader, err := blocks.Make(&images, texts, "")
+	blocks := mBlocks.New(
+		[2]image.Image{images[0], images[1]},
+		[3]string{texts[0], texts[1], texts[2]},
+	)
+	outImageReader, err := blocks.Make()
 	if err != nil {
 		// Todo : ошибка unknown
 		//handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
 		return
 	}
-	if err = handler.Sender.SendWithImage(obj.Message.PeerID, "Держи", outImageReader); err != nil {
+	if err = handler.Sender.SendWithImage(
+		obj.Message.PeerID, "Держи", utils.BufferToReader(outImageReader),
+	); err != nil {
 		// Todo : ошибка отправки сообщения с изображением
 		handler.Sender.Send(obj.Message.PeerID, err.Error())
 		log.Println("[ERROR]: ", err)
@@ -88,8 +96,8 @@ func (handler *Handler) HandleTBD(obj *events.MessageNewObject) {
 }
 
 // HandleLiquidRescale : функция кас
-func (handler *Handler) HandleLiquidRescale(obj *events.MessageNewObject) {
+func (handler *Handler) HandleLiquidRescale(obj events.MessageNewObject) {
 	// Todo : Смотреть внутрь функции
-	DoRescale(handler, obj)
+	rescale.DoRescale(handler, obj)
 	return
 }

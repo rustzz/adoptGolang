@@ -19,7 +19,7 @@ type Handler struct {
 							*/
 }
 
-func (handler *Handler) Handle(obj *events.MessageNewObject) {
+func (handler *Handler) Handle(obj events.MessageNewObject) {
 	log.Println(fmt.Sprintf(
 			"[INFO][OUT][CHAT: %d][USER: %d]: %s",
 			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
@@ -41,7 +41,7 @@ func (handler *Handler) Handle(obj *events.MessageNewObject) {
 			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		handler.HandleTBD(obj)
 		log.Println(fmt.Sprintf(
-			"[INFO][Начало][TBD][CHAT: %d][USER: %d]: %s",
+			"[INFO][Конец][TBD][CHAT: %d][USER: %d]: %s",
 			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		return
 	}
@@ -51,7 +51,7 @@ func (handler *Handler) Handle(obj *events.MessageNewObject) {
 			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		handler.HandleLiquidRescale(obj)
 		log.Println(fmt.Sprintf(
-			"[INFO][Начало][LiquidRescale][CHAT: %d][USER: %d]: %s",
+			"[INFO][Конец][LiquidRescale][CHAT: %d][USER: %d]: %s",
 			obj.Message.PeerID, obj.Message.FromID, obj.Message.Text))
 		return
 	}

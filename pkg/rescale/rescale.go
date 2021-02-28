@@ -1,6 +1,7 @@
-package handler
+package rescale
 
 import (
+	"adoptGolang/internal/engine/handler"
 	"adoptGolang/internal/engine/utils"
 	"github.com/SevereCloud/vksdk/v2/events"
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -10,7 +11,7 @@ import (
 )
 
 // Todo : Перенести в внешний модуль (репозиторий)
-func DoRescale(handler *Handler, obj *events.MessageNewObject) {
+func DoRescale(handler *handler.Handler, obj events.MessageNewObject) {
 	imagick.Initialize()
 	defer imagick.Terminate()
 
