@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"adoptGolang/internal/engine/errors"
-	messageHandler "adoptGolang/internal/engine/handler/message"
+	"adoptGolang/internal/engine/adopt/errors"
+	"adoptGolang/internal/engine/system/checkers"
 	"bytes"
 	"fmt"
 	"github.com/SevereCloud/vksdk/v2/object"
@@ -25,7 +25,7 @@ func GetTexts(message string, countTexts int) (out []string) {
 					то отдавать от первого индекса, где находится имя команды
 					 */
 	matched, _ := regexp.Match(mentionPattern, []byte(strings.ToLower(strings.Split(message, " ")[0])))
-	if matched || messageHandler.IsBotNamePrefix(message) {
+	if matched || checkers.IsBotNamePrefix(message) {
 		fromIndex = 1
 	}
 
@@ -56,8 +56,8 @@ GetImages : Собирает все изображения из сообщени
 			- 3: в отвеченном сообщении
 */
 func GetImages(message object.MessagesMessage, countImages int) (srcImageBuffers []*bytes.Buffer, err error) {
-	// in message
-	if err = messageHandler.ImageExist(message.Attachments); err == nil {
+	// in text
+	if err = checkers.ImageExist(message.Attachments); err == nil {
 		for _, attachment := range message.Attachments {
 			lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1 /*
 																	Индекс последней ссылки
@@ -70,8 +70,8 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageBuffers
 		return srcImageBuffers, nil
 	}
 	// in forward
-	if err = messageHandler.FwdMessageExist(message); err == nil {
-		if err = messageHandler.ImageExist(message.FwdMessages[0].Attachments); err == nil {
+	if err = checkers.FwdMessageExist(message); err == nil {
+		if err = checkers.ImageExist(message.FwdMessages[0].Attachments); err == nil {
 			for _, attachment := range message.FwdMessages[0].Attachments {
 				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1
 				srcImageBuffer, err := LoadSrcImageBufferFromURL(attachment.Photo.Sizes[lenOfAvailablePhotos].URL)
@@ -82,8 +82,8 @@ func GetImages(message object.MessagesMessage, countImages int) (srcImageBuffers
 		} else { return nil, err }
 	}
 	// in reply
-	if err = messageHandler.ReplyMessageExist(message); err == nil {
-		if err = messageHandler.ImageExist(message.ReplyMessage.Attachments); err == nil {
+	if err = checkers.ReplyMessageExist(message); err == nil {
+		if err = checkers.ImageExist(message.ReplyMessage.Attachments); err == nil {
 			for _, attachment := range message.ReplyMessage.Attachments {
 				lenOfAvailablePhotos := len(attachment.Photo.Sizes) - 1
 				srcImageBuffer, err := LoadSrcImageBufferFromURL(attachment.Photo.Sizes[lenOfAvailablePhotos].URL)
@@ -118,7 +118,7 @@ GetCommand : Отдает имя команды в зависимости как
 */
 func GetCommand(message string) string {
 	matched, _ := regexp.Match(mentionPattern, []byte(strings.ToLower(strings.Split(message, " ")[0])))
-	if matched || messageHandler.IsBotNamePrefix(message) {
+	if matched || checkers.IsBotNamePrefix(message) {
 		if len(strings.Split(message, " ")) < 2 { return "" }
 		return strings.ToLower(strings.Split(message, " ")[1])
 	}

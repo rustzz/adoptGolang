@@ -1,8 +1,11 @@
 package main
 
 import (
-	"adoptGolang/internal/engine/handler"
-	"adoptGolang/internal/engine/sender"
+	"adoptGolang/internal/database"
+	"adoptGolang/internal/engine"
+	"adoptGolang/internal/engine/adopt/handler"
+	"adoptGolang/internal/engine/system"
+	"adoptGolang/internal/engine/system/sender"
 	"context"
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/events"
@@ -30,11 +33,21 @@ func main() {
 		return
 	}
 
-	Handler := &handler.Handler{
+	// миграция бд
+	database.Migrate()
+
+	systemHandler := &system.Handler{
+		Group: group[0],
 		Client: client,
 		Sender: &sender.Sender{Client: client},
 	}
-	lp.MessageNew(func(_ context.Context, obj events.MessageNewObject) { go Handler.Handle(obj) })
+
+	controller := &engine.Controller{
+		AdoptHandler: &handler.AdoptHandler{ Handler: systemHandler },
+	}
+	lp.MessageNew(func(_ context.Context, obj events.MessageNewObject) {
+		go controller.Handle(obj)
+	})
 
 	log.Println("Starting...")
 	if err = lp.Run(); err != nil {
